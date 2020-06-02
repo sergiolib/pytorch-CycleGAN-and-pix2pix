@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 from torch.nn import init
+from torch.nn.modules.utils import _quadruple
+from torch.nn.modules.padding import _ReflectionPadNd
 import functools
 from torch.optim import lr_scheduler
 
@@ -8,6 +10,15 @@ from torch.optim import lr_scheduler
 ###############################################################################
 # Helper Functions
 ###############################################################################
+import torch
+
+import torch.nn.functional as F
+
+
+class ReflectionPad3d(_ReflectionPadNd):
+    def __init__(self, padding):
+        super(ReflectionPad3d, self).__init__()
+        self.padding = _quadruple(padding)
 
 
 class Identity(nn.Module):
@@ -150,6 +161,8 @@ def define_G(input_nc, output_nc, ngf, netG, norm='batch', use_dropout=False, in
         net = ResnetGenerator(input_nc, output_nc, ngf, norm_layer=norm_layer, use_dropout=use_dropout, n_blocks=9)
     elif netG == 'resnet_6blocks':
         net = ResnetGenerator(input_nc, output_nc, ngf, norm_layer=norm_layer, use_dropout=use_dropout, n_blocks=6)
+    elif netG == 'unet_64':
+        net = UnetGenerator(input_nc, output_nc, 6, ngf, norm_layer=norm_layer, use_dropout=use_dropout)
     elif netG == 'unet_128':
         net = UnetGenerator(input_nc, output_nc, 7, ngf, norm_layer=norm_layer, use_dropout=use_dropout)
     elif netG == 'unet_256':
@@ -337,7 +350,7 @@ class ResnetGenerator(nn.Module):
         else:
             use_bias = norm_layer == nn.InstanceNorm3d
 
-        model = [nn.ReflectionPad3d(3),
+        model = [ReflectionPad3d(3),
                  nn.Conv3d(input_nc, ngf, kernel_size=7, padding=0, bias=use_bias),
                  norm_layer(ngf),
                  nn.ReLU(True)]
@@ -362,7 +375,7 @@ class ResnetGenerator(nn.Module):
                                          bias=use_bias),
                       norm_layer(int(ngf * mult / 2)),
                       nn.ReLU(True)]
-        model += [nn.ReflectionPad3d(3)]
+        model += [ReflectionPad3d(3)]
         model += [nn.Conv3d(ngf, output_nc, kernel_size=7, padding=0)]
         model += [nn.Tanh()]
 
@@ -402,9 +415,9 @@ class ResnetBlock(nn.Module):
         conv_block = []
         p = 0
         if padding_type == 'reflect':
-            conv_block += [nn.ReflectionPad3d(1)]
+            conv_block += [ReflectionPad3d(1)]
         elif padding_type == 'replicate':
-            conv_block += [nn.ReplicationPad3d(1)]
+            conv_block += [ReplicationPad3d(1)]
         elif padding_type == 'zero':
             p = 1
         else:
@@ -416,9 +429,9 @@ class ResnetBlock(nn.Module):
 
         p = 0
         if padding_type == 'reflect':
-            conv_block += [nn.ReflectionPad3d(1)]
+            conv_block += [ReflectionPad3d(1)]
         elif padding_type == 'replicate':
-            conv_block += [nn.ReplicationPad3d(1)]
+            conv_block += [ReplicationPad3d(1)]
         elif padding_type == 'zero':
             p = 1
         else:

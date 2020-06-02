@@ -79,8 +79,15 @@ class Pix2PixModel(BaseModel):
         The option 'direction' can be used to swap images in domain A and domain B.
         """
         AtoB = self.opt.direction == 'AtoB'
-        self.real_A = input['A' if AtoB else 'B'].to(self.device)
-        self.real_B = input['B' if AtoB else 'A'].to(self.device)
+        original_dose = input['A' if AtoB else 'B'].unsqueeze(dim=1)
+        target_dose = input['B' if AtoB else 'A'].unsqueeze(dim=1)
+        density = input['density'].unsqueeze(dim=1)
+
+        if self.opt.input_nc == 2:
+            self.real_A = torch.cat([original_dose, density], dim=1).to(self.device)
+        elif self.opt.input_nc == 1:
+            self.real_A = original_dose
+        self.real_B = target_dose.to(self.device)
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):

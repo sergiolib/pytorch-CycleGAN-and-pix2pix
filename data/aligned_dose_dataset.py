@@ -5,7 +5,7 @@ from data.dose_folder import make_dataset, make_density_dataset
 from pydicom import dcmread
 
 
-class AlignedDataset(BaseDataset):
+class AlignedDoseDataset(BaseDataset):
     """A dataset class for paired doses dataset.
 
     It assumes that the directory '/path/to/data/train' contains two directories: original and target, and that doses in original are A, while those in target are B.
@@ -54,8 +54,8 @@ class AlignedDataset(BaseDataset):
 
         density = np.load(self.A_density_paths[index])
 
-        return {'A': A, 'B': B, 'density': density, 'A_paths': A_path, 'B_paths': B_path}
+        return {'A': A.astype(np.float32), 'B': B.astype(np.float32), 'density': density, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
         """Return the total number of images in the dataset."""
-        return len(self.AB_paths)
+        return len(self.A_paths)
