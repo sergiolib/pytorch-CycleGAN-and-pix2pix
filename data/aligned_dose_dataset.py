@@ -11,7 +11,6 @@ class AlignedDoseDataset(BaseDataset):
     It assumes that the directory '/path/to/data/train' contains two directories: original and target, and that doses in original are A, while those in target are B.
     During test time, you need to prepare a directory '/path/to/data/test'.
     """
-
     def __init__(self, opt):
         """Initialize this dataset class.
 
@@ -19,14 +18,26 @@ class AlignedDoseDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt)
-        self.dir_A = os.path.join(opt.dataroot, opt.phase, "original")  # get the doses directory
-        self.dir_B = os.path.join(opt.dataroot, opt.phase, "target")  # get the doses directory
-        self.A_paths = sorted(make_dataset(self.dir_A, opt.max_dataset_size))  # get dose paths
-        self.B_paths = sorted(make_dataset(self.dir_B, opt.max_dataset_size))  # get dose paths
-        self.A_density_paths = sorted(make_density_dataset(self.dir_A, opt.max_dataset_size))  # get density paths
-        self.B_density_paths = sorted(make_density_dataset(self.dir_B, opt.max_dataset_size))  # get density paths
-        self.A_var_paths = sorted(make_variance_dataset(self.dir_A, opt.max_dataset_size))  # get dose paths
-        self.B_var_paths = sorted(make_variance_dataset(self.dir_B, opt.max_dataset_size))  # get dose paths
+        self.dir_A = os.path.join(opt.dataroot, opt.phase,
+                                  "original")  # get the doses directory
+        self.dir_B = os.path.join(opt.dataroot, opt.phase,
+                                  "target")  # get the doses directory
+        self.A_paths = sorted(make_dataset(
+            self.dir_A, opt.max_dataset_size))  # get dose paths
+        self.B_paths = sorted(make_dataset(
+            self.dir_B, opt.max_dataset_size))  # get dose paths
+        self.A_density_paths = sorted(
+            make_density_dataset(self.dir_A,
+                                 opt.max_dataset_size))  # get density paths
+        self.B_density_paths = sorted(
+            make_density_dataset(self.dir_B,
+                                 opt.max_dataset_size))  # get density paths
+        self.A_var_paths = sorted(
+            make_variance_dataset(self.dir_A,
+                                  opt.max_dataset_size))  # get dose paths
+        self.B_var_paths = sorted(
+            make_variance_dataset(self.dir_B,
+                                  opt.max_dataset_size))  # get dose paths
         self.input_nc = self.opt.output_nc if self.opt.direction == 'BtoA' else self.opt.input_nc
         self.output_nc = self.opt.input_nc if self.opt.direction == 'BtoA' else self.opt.output_nc
 
@@ -50,7 +61,7 @@ class AlignedDoseDataset(BaseDataset):
 
         A_readfile.fix_meta_info()
         B_readfile.fix_meta_info()
-        
+
         A = A_readfile.pixel_array * A_readfile.DoseGridScaling
         B = B_readfile.pixel_array * B_readfile.DoseGridScaling
 
@@ -62,14 +73,22 @@ class AlignedDoseDataset(BaseDataset):
 
         A_var_readfile.fix_meta_info()
         B_var_readfile.fix_meta_info()
-        
+
         A_var = A_var_readfile.pixel_array * A_var_readfile.DoseGridScaling
         B_var = B_var_readfile.pixel_array * B_var_readfile.DoseGridScaling
-        
+
         # Density
         density = np.load(self.A_density_paths[index])
-        
-        return {'A': A.astype(np.float32), 'B': B.astype(np.float32), 'A_var': A_var.astype(np.float32), 'B_var': B_var.astype(np.float32), 'density': density, 'A_paths': A_path, 'B_paths': B_path}
+
+        return {
+            'A': A.astype(np.float32),
+            'B': B.astype(np.float32),
+            'A_var': A_var.astype(np.float32),
+            'B_var': B_var.astype(np.float32),
+            'density': density.astype(np.float32),
+            'A_paths': A_path,
+            'B_paths': B_path
+        }
 
     def __len__(self):
         """Return the total number of images in the dataset."""

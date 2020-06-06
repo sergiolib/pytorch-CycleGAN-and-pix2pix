@@ -119,7 +119,7 @@ class Pix2PixModel(BaseModel):
     def backward_G(self):
         """Calculate GAN and L1 loss for the generator"""
         # First, G(A) should fake the discriminator
-        fake_AB = torch.cat((self.real_A, self.fake_B), 1)
+        fake_AB = torch.cat((self.real_A, self.fake_B_scaled), 1)
         pred_fake = self.netD(fake_AB)
         self.loss_G_GAN = self.criterionGAN(pred_fake, True)
         # Second, G(A) = B
