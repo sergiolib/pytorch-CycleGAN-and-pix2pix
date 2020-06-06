@@ -69,7 +69,7 @@ class AlignedDoseDataset(BaseDataset):
         # Density
         density = np.load(self.A_density_paths[index])
         
-        return {'A': A.astype(np.float32), 'B': B.astype(np.float32), 'A_var': A_var.astype(np.float32), 'B_var': B_var.astype(np.float32), 'density': density, 'A_paths': A_path, 'B_paths': B_path}
+        return {'A': A.astype(np.float32), 'B': B.astype(np.float32), 'A_var': A_var.astype(np.float32), 'B_var': B_var.astype(np.float32), 'density': density.astype(np.float32), 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
         """Return the total number of images in the dataset."""
