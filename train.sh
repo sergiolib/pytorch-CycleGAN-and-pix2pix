@@ -1,0 +1,1 @@
+python train.py --dataroot /home/sliberman/data/V7_processed/ --name v7_pix2pix --model pix2pix --direction AtoB --netG unet_64 --input_nc 2 --output_nc 1 --batch_size 1 --dataset_mode aligned_dose --save_epoch_freq 1 --crop_size 96 96 64 --norm instance

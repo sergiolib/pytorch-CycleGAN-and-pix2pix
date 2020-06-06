@@ -1,6 +1,9 @@
 import torch
 from .base_model import BaseModel
 from . import networks
+from scalers import ZCAModel
+import os
+import json
 
 
 class Pix2PixModel(BaseModel):
@@ -51,19 +54,23 @@ class Pix2PixModel(BaseModel):
         if self.isTrain:
             self.model_names = ['G', 'D']
         else:  # during test time, only load G
-            self.model_names = ['G']
+            self.model_names = ['G', 'D']
         # define networks (both generator and discriminator)
         self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.ngf, opt.netG, opt.norm,
                                       not opt.no_dropout, opt.init_type, opt.init_gain, self.gpu_ids)
 
-        if self.isTrain:  # define a discriminator; conditional GANs need to take both input and output images; Therefore, #channels for D is input_nc + output_nc
-            self.netD = networks.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD,
-                                          opt.n_layers_D, opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
+        self.netD = networks.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD,
+                                      opt.n_layers_D, opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
 
+        # define loss functions
+        self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
+        self.criterionL1 = torch.nn.L1Loss()
+
+        with open(os.path.join(self.opt.dataroot, "zca_stats.json")) as stats_file:
+            stats = json.load(stats_file)
+            self.scaler = ZCAModel(load_from=stats)
+        
         if self.isTrain:
-            # define loss functions
-            self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
-            self.criterionL1 = torch.nn.L1Loss()
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -85,23 +92,24 @@ class Pix2PixModel(BaseModel):
 
         if self.opt.input_nc == 2:
             self.real_A = torch.cat([original_dose, density], dim=1).to(self.device)
+            self.real_A = self.scaler(self.real_A)
         elif self.opt.input_nc == 1:
             self.real_A = original_dose
         self.real_B = target_dose.to(self.device)
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
-
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         self.fake_B = self.netG(self.real_A)  # G(A)
+        self.fake_B_scaled = self.scaler(self.fake_B)
 
     def backward_D(self):
         """Calculate GAN loss for the discriminator"""
         # Fake; stop backprop to the generator by detaching fake_B
-        fake_AB = torch.cat((self.real_A, self.fake_B), 1)  # we use conditional GANs; we need to feed both input and output to the discriminator
+        fake_AB = torch.cat((self.real_A, self.fake_B_scaled), 1)  # we use conditional GANs; we need to feed both input and output to the discriminator
         pred_fake = self.netD(fake_AB.detach())
         self.loss_D_fake = self.criterionGAN(pred_fake, False)
         # Real
-        real_AB = torch.cat((self.real_A, self.real_B), 1)
+        real_AB = torch.cat((self.real_A, self.scaler(self.real_B)), 1)
         pred_real = self.netD(real_AB)
         self.loss_D_real = self.criterionGAN(pred_real, True)
         # combine loss and calculate gradients
