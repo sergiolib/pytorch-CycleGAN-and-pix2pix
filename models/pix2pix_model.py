@@ -66,12 +66,6 @@ class Pix2PixModel(BaseModel):
         self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
         self.criterionL1 = torch.nn.L1Loss()
 
-        # Zero losses
-        self.loss_D_fake = 0.0
-        self.loss_D_real = 0.0
-        self.loss_G_GAN = 0.0
-        self.loss_G_L1 = 0.0
-
         with open(os.path.join(self.opt.dataroot, "zca_stats.json")) as stats_file:
             stats = json.load(stats_file)
             self.scaler = ZCAModel(load_from=stats)
@@ -113,30 +107,26 @@ class Pix2PixModel(BaseModel):
         # Fake; stop backprop to the generator by detaching fake_B
         fake_AB = torch.cat((self.real_A, self.fake_B_scaled), 1)  # we use conditional GANs; we need to feed both input and output to the discriminator
         pred_fake = self.netD(fake_AB.detach())
-        loss_D_fake = self.criterionGAN(pred_fake, False)
-        self.loss_D_fake += loss_D_fake
+        self.loss_D_fake = self.criterionGAN(pred_fake, False)
         # Real
         real_AB = torch.cat((self.real_A, self.scaler(self.real_B)), 1)
         pred_real = self.netD(real_AB)
-        loss_D_real = self.criterionGAN(pred_real, True)
-        self.loss_D_real += loss_D_real
+        self.loss_D_real = self.criterionGAN(pred_real, True)
         # combine loss and calculate gradients
-        loss_D = (loss_D_fake + loss_D_real) * 0.5
-        loss_D.backward()
+        self.loss_D = (self.loss_D_fake + self.loss_D_real) * 0.5
+        self.loss_D.backward()
 
     def backward_G(self):
         """Calculate GAN and L1 loss for the generator"""
         # First, G(A) should fake the discriminator
         fake_AB = torch.cat((self.real_A, self.fake_B_scaled), 1)
         pred_fake = self.netD(fake_AB)
-        loss_G_GAN = self.criterionGAN(pred_fake, True)
-        self.loss_G_GAN += loss_G_GAN
+        self.loss_G_GAN = self.criterionGAN(pred_fake, True)
         # Second, G(A) = B
-        loss_G_L1 = self.criterionL1(self.fake_B, self.real_B) * self.opt.lambda_L1
-        self.loss_G_L1 += loss_G_L1
+        self.loss_G_L1 = self.criterionL1(self.fake_B, self.real_B) * self.opt.lambda_L1
         # combine loss and calculate gradients
-        loss_G = loss_G_GAN + loss_G_L1
-        loss_G.backward()
+        self.loss_G = self.loss_G_GAN + self.loss_G_L1
+        self.loss_G.backward()
 
     def optimize_parameters(self):
         self.forward()                   # compute fake images: G(A)

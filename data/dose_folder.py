@@ -1,7 +1,6 @@
-import os
 import itertools
+import os
 import pathlib
-
 
 DOSE_EXTENSIONS = ["dcm"]
 DOSE_PREFIX = ["dose"]
