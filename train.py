@@ -24,7 +24,7 @@ import os
 from options.train_options import TrainOptions
 from data import create_dataset
 from models import create_model
-from augment import random_crop, random_flip
+from augment import random_crop, random_flip, sample_dose_distributions
 #from util.visualizer import Visualizer
 
 if __name__ == '__main__':
@@ -53,6 +53,7 @@ if __name__ == '__main__':
         all_D_fake = 0
         
         for i, data in enumerate(dataset):  # inner loop within one epoch
+            data = sample_dose_distributions(data)
             data = random_flip(data)
             data = random_crop(data, opt.crop_size)
             iter_start_time = time.time()  # timer for computation per iteration

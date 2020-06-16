@@ -165,3 +165,8 @@ class LinearScalerModel(nn.Module):
             x[:, 1] /= (self.params[3] - self.params[1])
 
         return x
+
+
+class IdentityScaler:
+    def __call__(self, x):
+        return x

@@ -99,3 +99,19 @@ def random_flip(data):
         tv_sample[:] = torch.from_numpy(tv_sample.numpy()[..., ::x, :, ::z].copy())
 
     return data
+
+def sample_dose_distributions(data):
+    original = data["A"]
+    original_variance = data["A_var"]
+
+    target = data["B"]
+    target_variance = data["B_var"]
+
+    original += torch.sqrt(original_variance) * torch.randn_like(original_variance)
+    target += torch.sqrt(target_variance) * torch.randn_like(target_variance)
+
+    torch.relu_(original)
+    torch.relu_(target)
+
+    return data
+
