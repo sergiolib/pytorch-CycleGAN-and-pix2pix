@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 from .base_model import BaseModel
 from . import networks
@@ -66,7 +68,7 @@ class Pix2PixModel(BaseModel):
         self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
         self.criterionL1 = torch.nn.L1Loss()
 
-        with open("zca_stats.json") as stats_file:
+        with open(Path(opt.dataroot).parent / "zca_stats.json") as stats_file:
             stats = json.load(stats_file)
             self.scaler = ZCAModel(load_from=stats)
         
