@@ -66,7 +66,7 @@ class Pix2PixModel(BaseModel):
         self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
         self.criterionL1 = torch.nn.L1Loss()
 
-        with open(os.path.join(self.opt.dataroot, "zca_stats.json")) as stats_file:
+        with open(os.path.join("zca_stats.json")) as stats_file:
             stats = json.load(stats_file)
             self.scaler = ZCAModel(load_from=stats)
         
