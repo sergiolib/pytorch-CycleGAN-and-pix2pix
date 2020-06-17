@@ -62,4 +62,4 @@ class AlignedDoseH5Dataset(BaseDataset):
         """Return the total number of images in the dataset."""
         with h5py.File(self.dataroot, "r") as f:
             mode_files = f["original"][self.mode]
-        return len([i for i in mode_files.keys() if "dose" in i])
+            return len([i for i in mode_files.keys() if "dose" in i])
