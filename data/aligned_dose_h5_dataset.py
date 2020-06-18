@@ -39,11 +39,11 @@ class AlignedDoseH5Dataset(BaseDataset):
             B_paths (str) - - image paths (same as A_paths)
         """
         with h5py.File(self.dataroot, "r") as f:
-            original_dose = f["original"][self.mode][f"dose_{index}"][...]
-            original_variance = f["original"][self.mode][f"variance_{index}"][...]
+            original_dose = f["original"][self.mode]["dose"][f"{index}"][...]
+            original_variance = f["original"][self.mode]["variance"][f"{index}"][...]
 
-            target_dose = f["target"][self.mode][f"dose_{index}"][...]
-            target_variance = f["target"][self.mode][f"variance_{index}"][...]
+            target_dose = f["target"][self.mode]["dose"][f"{index}"][...]
+            target_variance = f["target"][self.mode]["variance"][f"{index}"][...]
 
             density = f["density"][...]
 
