@@ -6,13 +6,13 @@ from . import networks
 
 
 class BaseModel(ABC):
-    """This class is an abstract base class (ABC) for models.
+    """This class is an abstract base class (ABC) for p2p_models.
     To create a subclass, you need to implement the following five functions:
         -- <__init__>:                      initialize the class; first call BaseModel.__init__(self, opt).
         -- <set_input>:                     unpack data from dataset and apply preprocessing.
         -- <forward>:                       produce intermediate results.
         -- <optimize_parameters>:           calculate losses, gradients, and update network weights.
-        -- <modify_commandline_options>:    (optionally) add model-specific options and set default options.
+        -- <modify_commandline_options>:    (optionally) add model-specific p2p_options and set default p2p_options.
     """
 
     def __init__(self, opt):
@@ -45,11 +45,11 @@ class BaseModel(ABC):
 
     @staticmethod
     def modify_commandline_options(parser, is_train):
-        """Add new model-specific options, and rewrite default values for existing options.
+        """Add new model-specific p2p_options, and rewrite default values for existing p2p_options.
 
         Parameters:
             parser          -- original option parser
-            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific options.
+            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific p2p_options.
 
         Returns:
             the modified parser.
@@ -89,7 +89,7 @@ class BaseModel(ABC):
         self.print_networks(opt.verbose)
 
     def eval(self):
-        """Make models eval mode during test time"""
+        """Make p2p_models eval mode during test time"""
         for name in self.model_names:
             if isinstance(name, str):
                 net = getattr(self, 'net' + name)
@@ -181,7 +181,7 @@ class BaseModel(ABC):
         for name in self.model_names:
             if isinstance(name, str):
                 load_filename = '%s_net_%s.pth' % (epoch, name)
-                load_path = os.path.join(self.save_dir, load_filename)
+                load_path = os.path.join(self.save_dir, "checkpoints", load_filename)
                 net = getattr(self, 'net' + name)
                 if isinstance(net, torch.nn.DataParallel):
                     net = net.module

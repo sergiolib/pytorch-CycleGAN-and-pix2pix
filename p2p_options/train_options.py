@@ -2,9 +2,9 @@ from .base_options import BaseOptions
 
 
 class TrainOptions(BaseOptions):
-    """This class includes training options.
+    """This class includes training p2p_options.
 
-    It also includes shared options defined in BaseOptions.
+    It also includes shared p2p_options defined in BaseOptions.
     """
 
     def initialize(self, parser):

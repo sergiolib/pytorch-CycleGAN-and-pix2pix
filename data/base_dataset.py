@@ -17,11 +17,11 @@ class BaseDataset(data.Dataset, ABC):
     -- <__init__>:                      initialize the class, first call BaseDataset.__init__(self, opt).
     -- <__len__>:                       return the size of dataset.
     -- <__getitem__>:                   get a data point.
-    -- <modify_commandline_options>:    (optionally) add dataset-specific options and set default options.
+    -- <modify_commandline_options>:    (optionally) add dataset-specific p2p_options and set default p2p_options.
     """
 
     def __init__(self, opt):
-        """Initialize the class; save the options in the class
+        """Initialize the class; save the p2p_options in the class
 
         Parameters:
             opt (Option class)-- stores all the experiment flags; needs to be a subclass of BaseOptions
@@ -31,11 +31,11 @@ class BaseDataset(data.Dataset, ABC):
 
     @staticmethod
     def modify_commandline_options(parser, is_train):
-        """Add new dataset-specific options, and rewrite default values for existing options.
+        """Add new dataset-specific p2p_options, and rewrite default values for existing p2p_options.
 
         Parameters:
             parser          -- original option parser
-            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific options.
+            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific p2p_options.
 
         Returns:
             the modified parser.

@@ -18,7 +18,7 @@ class GetData(object):
     Examples:
         >>> from util.get_data import GetData
         >>> gd = GetData(technique='cyclegan')
-        >>> new_data_path = gd.get(save_path='./datasets')  # options will be displayed.
+        >>> new_data_path = gd.get(save_path='./datasets')  # p2p_options will be displayed.
 
     Alternatively, You can use bash scripts: 'scripts/download_pix2pix_model.sh'
     and 'scripts/download_cyclegan_model.sh'.
@@ -85,7 +85,7 @@ class GetData(object):
             save_path (str) -- A directory to save the data to.
             dataset (str)   -- (optional). A specific dataset to download.
                             Note: this must include the file extension.
-                            If None, options will be presented for you
+                            If None, p2p_options will be presented for you
                             to choose from.
 
         Returns:

@@ -6,7 +6,7 @@ The class name should be consistent with both the filename and its dataset_mode 
 The filename should be <dataset_mode>_dataset.py
 The class name should be <Dataset_mode>Dataset.py
 You need to implement the following functions:
-    -- <modify_commandline_options>:　Add dataset-specific options and rewrite default values for existing options.
+    -- <modify_commandline_options>:　Add dataset-specific p2p_options and rewrite default values for existing p2p_options.
     -- <__init__>: Initialize this dataset class.
     -- <__getitem__>: Return a data point and its metadata information.
     -- <__len__>: Return the number of images.
@@ -20,11 +20,11 @@ class TemplateDataset(BaseDataset):
     """A template dataset class for you to implement custom datasets."""
     @staticmethod
     def modify_commandline_options(parser, is_train):
-        """Add new dataset-specific options, and rewrite default values for existing options.
+        """Add new dataset-specific p2p_options, and rewrite default values for existing p2p_options.
 
         Parameters:
             parser          -- original option parser
-            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific options.
+            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific p2p_options.
 
         Returns:
             the modified parser.
@@ -40,7 +40,7 @@ class TemplateDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
 
         A few things can be done here.
-        - save the options (have been done in BaseDataset)
+        - save the p2p_options (have been done in BaseDataset)
         - get image paths and meta information of the dataset.
         - define the image transformation.
         """

@@ -14,11 +14,11 @@ class ColorizationDataset(BaseDataset):
     """
     @staticmethod
     def modify_commandline_options(parser, is_train):
-        """Add new dataset-specific options, and rewrite default values for existing options.
+        """Add new dataset-specific p2p_options, and rewrite default values for existing p2p_options.
 
         Parameters:
             parser          -- original option parser
-            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific options.
+            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific p2p_options.
 
         Returns:
             the modified parser.

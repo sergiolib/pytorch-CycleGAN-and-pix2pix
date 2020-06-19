@@ -54,7 +54,7 @@ class Visualizer():
 
         Parameters:
             opt -- stores all the experiment flags; needs to be a subclass of BaseOptions
-        Step 1: Cache the training/test options
+        Step 1: Cache the training/test p2p_options
         Step 2: connect to a visdom server
         Step 3: create an HTML object for saveing HTML filters
         Step 4: create a logging file to store training losses

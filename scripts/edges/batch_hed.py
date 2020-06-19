@@ -1,6 +1,6 @@
 # HED batch processing script; modified from https://github.com/s9xie/hed/blob/master/examples/hed/HED-tutorial.ipynb
 # Step 1: download the hed repo: https://github.com/s9xie/hed
-# Step 2: download the models and protoxt, and put them under {caffe_root}/examples/hed/
+# Step 2: download the p2p_models and protoxt, and put them under {caffe_root}/examples/hed/
 # Step 3: put this script under {caffe_root}/examples/hed/
 # Step 4: run the following script:
 #       python batch_hed.py --images_dir=/data/to/path/photos/ --hed_mat_dir=/data/to/path/hed_mat_files/

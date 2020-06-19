@@ -1,6 +1,6 @@
 """Model class template
 
-This module provides a template for users to implement custom models.
+This module provides a template for users to implement custom p2p_models.
 You can specify '--model template' to use this model.
 The class name should be consistent with both the filename and its model option.
 The filename should be <model>_dataset.py
@@ -9,7 +9,7 @@ It implements a simple image-to-image translation baseline based on regression l
 Given input-output pairs (data_A, data_B), it learns a network netG that can minimize the following L1 loss:
     min_<netG> ||netG(data_A) - data_B||_1
 You need to implement the following functions:
-    <modify_commandline_options>:　Add model-specific options and rewrite default values for existing options.
+    <modify_commandline_options>:　Add model-specific p2p_options and rewrite default values for existing p2p_options.
     <__init__>: Initialize this model class.
     <set_input>: Unpack input data and perform data pre-processing.
     <forward>: Run forward pass. This will be called by both <optimize_parameters> and <test>.
@@ -23,11 +23,11 @@ from . import networks
 class TemplateModel(BaseModel):
     @staticmethod
     def modify_commandline_options(parser, is_train=True):
-        """Add new model-specific options and rewrite default values for existing options.
+        """Add new model-specific p2p_options and rewrite default values for existing p2p_options.
 
         Parameters:
             parser -- the option parser
-            is_train -- if it is training phase or test phase. You can use this flag to add training-specific or test-specific options.
+            is_train -- if it is training phase or test phase. You can use this flag to add training-specific or test-specific p2p_options.
 
         Returns:
             the modified parser.
@@ -42,7 +42,7 @@ class TemplateModel(BaseModel):
         """Initialize this model class.
 
         Parameters:
-            opt -- training/test options
+            opt -- training/test p2p_options
 
         A few things can be done here.
         - (required) call the initialization function of BaseModel
@@ -53,7 +53,7 @@ class TemplateModel(BaseModel):
         self.loss_names = ['loss_G']
         # specify the images you want to save and display. The program will call base_model.get_current_visuals to save and display these images.
         self.visual_names = ['data_A', 'data_B', 'output']
-        # specify the models you want to save to the disk. The program will call base_model.save_networks and base_model.load_networks to save and load networks.
+        # specify the p2p_models you want to save to the disk. The program will call base_model.save_networks and base_model.load_networks to save and load networks.
         # you can use opt.isTrain to specify different behaviors for training and test. For example, some networks will not be used during test, and you don't need to load them.
         self.model_names = ['G']
         # define networks; you can use opt.isTrain to specify different behaviors for training and test.

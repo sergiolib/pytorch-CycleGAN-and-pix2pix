@@ -7,10 +7,10 @@ import data
 
 
 class BaseOptions():
-    """This class defines options used during both training and test time.
+    """This class defines p2p_options used during both training and test time.
 
-    It also implements several helper functions such as parsing, printing, and saving the options.
-    It also gathers additional options defined in <modify_commandline_options> functions in both dataset class and model class.
+    It also implements several helper functions such as parsing, printing, and saving the p2p_options.
+    It also gathers additional p2p_options defined in <modify_commandline_options> functions in both dataset class and model class.
     """
 
     def __init__(self):
@@ -18,12 +18,12 @@ class BaseOptions():
         self.initialized = False
 
     def initialize(self, parser):
-        """Define the common options that are used in both training and test."""
+        """Define the common p2p_options that are used in both training and test."""
         # basic parameters
         parser.add_argument('--dataroot', required=True, help='path to images (should have subfolders trainA, trainB, valA, valB, etc)')
-        parser.add_argument('--name', type=str, default='experiment_name', help='name of the experiment. It decides where to store samples and models')
+        parser.add_argument('--name', type=str, default='experiment_name', help='name of the experiment. It decides where to store samples and p2p_models')
         parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
+        parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='p2p_models are saved here')
         # model parameters
         parser.add_argument('--model', type=str, default='cycle_gan', help='chooses which model to use. [cycle_gan | pix2pix | test | colorization]')
         parser.add_argument('--input_nc', type=int, default=3, help='# of input image channels: 3 for RGB and 1 for grayscale')
@@ -51,32 +51,32 @@ class BaseOptions():
         parser.add_argument('--display_winsize', type=int, default=256, help='display window size for both visdom and HTML')
         # additional parameters
         parser.add_argument('--epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
-        parser.add_argument('--load_iter', type=int, default='0', help='which iteration to load? if load_iter > 0, the code will load models by iter_[load_iter]; otherwise, the code will load models by [epoch]')
+        parser.add_argument('--load_iter', type=int, default='0', help='which iteration to load? if load_iter > 0, the code will load p2p_models by iter_[load_iter]; otherwise, the code will load p2p_models by [epoch]')
         parser.add_argument('--verbose', action='store_true', help='if specified, print more debugging information')
         parser.add_argument('--suffix', default='', type=str, help='customized suffix: opt.name = opt.name + suffix: e.g., {model}_{netG}_size{load_size}')
         self.initialized = True
         return parser
 
     def gather_options(self):
-        """Initialize our parser with basic options(only once).
-        Add additional model-specific and dataset-specific options.
-        These options are defined in the <modify_commandline_options> function
+        """Initialize our parser with basic p2p_options(only once).
+        Add additional model-specific and dataset-specific p2p_options.
+        These p2p_options are defined in the <modify_commandline_options> function
         in model and dataset classes.
         """
         if not self.initialized:  # check if it has been initialized
             parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
             parser = self.initialize(parser)
 
-        # get the basic options
+        # get the basic p2p_options
         opt, _ = parser.parse_known_args()
 
-        # modify model-related parser options
+        # modify model-related parser p2p_options
         model_name = opt.model
         model_option_setter = models.get_option_setter(model_name)
         parser = model_option_setter(parser, self.isTrain)
         opt, _ = parser.parse_known_args()  # parse again with new defaults
 
-        # modify dataset-related parser options
+        # modify dataset-related parser p2p_options
         dataset_name = opt.dataset_mode
         dataset_option_setter = data.get_option_setter(dataset_name)
         parser = dataset_option_setter(parser, self.isTrain)
@@ -86,10 +86,10 @@ class BaseOptions():
         return parser.parse_args()
 
     def print_options(self, opt):
-        """Print and save options
+        """Print and save p2p_options
 
-        It will print both current options and default values(if different).
-        It will save options into a text file / [checkpoints_dir] / opt.txt
+        It will print both current p2p_options and default values(if different).
+        It will save p2p_options into a text file / [checkpoints_dir] / opt.txt
         """
         message = ''
         message += '----------------- Options ---------------\n'
@@ -111,7 +111,7 @@ class BaseOptions():
             opt_file.write('\n')
 
     def parse(self):
-        """Parse our options, create checkpoints directory suffix, and set up gpu device."""
+        """Parse our p2p_options, create checkpoints directory suffix, and set up gpu device."""
         opt = self.gather_options()
         opt.isTrain = self.isTrain   # train or test
 

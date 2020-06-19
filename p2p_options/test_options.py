@@ -2,13 +2,13 @@ from .base_options import BaseOptions
 
 
 class TestOptions(BaseOptions):
-    """This class includes test options.
+    """This class includes test p2p_options.
 
-    It also includes shared options defined in BaseOptions.
+    It also includes shared p2p_options defined in BaseOptions.
     """
 
     def initialize(self, parser):
-        parser = BaseOptions.initialize(self, parser)  # define shared options
+        parser = BaseOptions.initialize(self, parser)  # define shared p2p_options
         parser.add_argument('--results_dir', type=str, default='./results/', help='saves results here.')
         parser.add_argument('--aspect_ratio', type=float, default=1.0, help='aspect ratio of result images')
         parser.add_argument('--phase', type=str, default='test', help='train, val, test, etc')
